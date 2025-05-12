@@ -1,0 +1,101 @@
+﻿@page
+@model SkillSwap.Pages.Match.IndexModel
+@{
+    ViewData["Title"] = "Trova Match";
+}
+
+<div class="container">
+    <h1 class="mb-4">Trova persone con cui scambiare competenze</h1>
+
+    @if (!Model.HasSkills)
+    {
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Non hai ancora aggiunto competenze!</h4>
+                <p>Prima di trovare match, devi aggiungere almeno una competenza che offri o che cerchi nel tuo profilo.</p>
+                <hr>
+                <a href="/Profile/AddSkill?isOffered=true" class="btn btn-success">Aggiungi competenza offerta</a>
+                <a href="/Profile/AddSkill?isOffered=false" class="btn btn-info">Aggiungi competenza richiesta</a>
+            </div>
+    }
+    else
+    {
+        @if (Model.Matches.Any())
+        {
+                    <div class="row">
+                @foreach (var match in Model.Matches)
+                {
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center">
+                                @if (!string.IsNullOrEmpty(match.ProfileImageUrl))
+                                {
+                                                    <img src="@match.ProfileImageUrl" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Immagine profilo" />
+                                }
+                                else
+                                {
+                                                    <img src="/images/default-profile.png" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Immagine profilo" />
+                                }
+                                            <h5 class="mb-0">@match.UserEmail</h5>
+                                        </div>
+                                        <div class="card-body">
+                                @if (!string.IsNullOrEmpty(match.Bio))
+                                {
+                                                    <p><strong>Bio:</strong> @match.Bio</p>
+                                }
+
+                                @if (match.OfferedSkills.Any())
+                                {
+                                                    <h6 class="text-success">Offre:</h6>
+                                                    <ul class="mb-3">
+                                        @foreach (var skill in match.OfferedSkills)
+                                        {
+                                                                <li>
+                                                                    <strong>@skill.Name</strong> (@skill.Category) -
+                                                                    <span class="badge bg-success">Livello: @skill.ProficiencyLevel/5</span>
+                                                                </li>
+                                        }
+                                                    </ul>
+                                }
+
+                                @if (match.RequestedSkills.Any())
+                                {
+                                                    <h6 class="text-info">Cerca:</h6>
+                                                    <ul>
+                                        @foreach (var skill in match.RequestedSkills)
+                                        {
+                                                                <li><strong>@skill.Name</strong> (@skill.Category)</li>
+                                        }
+                                                    </ul>
+                                }
+
+                                @if (match.ConversationStarters != null)
+                                {
+                                                    <div class="alert alert-light mt-3">
+                                                        <strong>Suggerimento per iniziare la conversazione:</strong>
+                                                        <p class="mb-0 fst-italic">@match.ConversationStarters</p>
+                                                    </div>
+                                }
+                                        </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-page="/Profile/Index" asp-route-userId="@match.Id" class="btn btn-outline-primary">Visualizza profilo</a>
+                                    <a asp-page="/Messages/New" asp-route-recipientId="@match.Id" class="btn btn-primary">Invia messaggio</a>
+                                </div>
+                            </div>
+                                    </div>
+                                </div>
+                }
+                    </div>
+        }
+        else
+        {
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Nessun match trovato</h4>
+                        <p>Non abbiamo trovato persone con competenze compatibili alle tue. Prova ad aggiungere più competenze al tuo profilo!</p>
+                        <hr>
+                        <a href="/Profile/AddSkill?isOffered=true" class="btn btn-success">Aggiungi competenza offerta</a>
+                        <a href="/Profile/AddSkill?isOffered=false" class="btn btn-info">Aggiungi competenza richiesta</a>
+                    </div>
+        }
+    }
+</div>

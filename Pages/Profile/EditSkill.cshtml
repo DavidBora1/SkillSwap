@@ -1,0 +1,91 @@
+﻿@page
+@model SkillSwap.Pages.Profile.EditSkillModel
+@{
+    ViewData["Title"] = "Modifica Competenza";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/api/Profile/EditSkill" method="post">
+                        <input type="hidden" name="Id" value="@Model.Skill.Id" />
+                        <input type="hidden" name="UserProfileId" value="@Model.Skill.UserProfileId" />
+                        <input type="hidden" name="IsOffered" value="@Model.Skill.IsOffered.ToString()" />
+
+                        @if (ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Nome competenza</label>
+                            <input type="text" id="Name" name="Name" value="@Model.Skill.Name" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Category" class="form-label">Categoria</label>
+                            <select id="Category" name="Category" class="form-select">
+                                @{
+                                    var categories = new[] { "Informatica", "Lingue", "Musica", "Arte", "Sport", "Cucina", "Scienze", "Matematica", "Altro" };
+                                    foreach (var category in categories)
+                                    {
+                                        <option value="@category" selected="@(Model.Skill.Category == category)">@category</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Descrizione</label>
+                            <textarea id="Description" name="Description" class="form-control" rows="5">@Model.Skill.Description</textarea>
+                        </div>
+
+                        <!-- Modifica la sezione relativa al ProficiencyLevel per renderla opzionale -->
+                        @if (Model.Skill.IsOffered)
+                        {
+                            <div class="mb-3">
+                                <label for="ProficiencyLevel" class="form-label">Livello di competenza (1-5)</label>
+                                <select id="ProficiencyLevel" name="ProficiencyLevel" class="form-select">
+                                    @{
+                                        var levels = new[] {
+                                new { Value = 1, Text = "1 - Base" },
+                                new { Value = 2, Text = "2 - Elementare" },
+                                new { Value = 3, Text = "3 - Intermedio" },
+                                new { Value = 4, Text = "4 - Avanzato" },
+                                new { Value = 5, Text = "5 - Esperto" }
+                                };
+                                        foreach (var level in levels)
+                                        {
+                                            <option value="@level.Value" selected="@(Model.Skill.ProficiencyLevel == level.Value)">@level.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Campo nascosto per le competenze richieste -->
+                            <input type="hidden" name="ProficiencyLevel" value="" />
+                        }
+
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Salva modifiche</button>
+                            <a href="/Profile/Index" class="btn btn-secondary">Annulla</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

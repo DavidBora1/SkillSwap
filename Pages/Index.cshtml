@@ -1,0 +1,325 @@
+﻿@page
+@model SkillSwap.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero-section mb-5 pt-3 pb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Scambia competenze,<br>espandi i tuoi orizzonti</h1>
+                <p class="lead mb-4">SkillSwap è la piattaforma che ti permette di condividere ciò che sai fare e imparare nuove competenze da altre persone. Nessun costo, solo scambio di conoscenze.</p>
+
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div class="d-flex flex-wrap gap-3">
+                        <a class="btn btn-primary btn-lg" href="/Account/Register">
+                            <i class="bi bi-person-plus me-2"></i>Registrati ora
+                        </a>
+                        <a class="btn btn-outline-primary btn-lg" href="/Account/Login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Accedi
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-3">
+                        <a class="btn btn-success btn-lg" href="/Match">
+                            <i class="bi bi-people me-2"></i>Trova Match
+                        </a>
+                        <a class="btn btn-outline-primary btn-lg" href="/Dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
+                <img src="/Images?handler=HeroIllustration" class="img-fluid" alt="Scambio di competenze">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quote Section -->
+<section class="mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg" data-aos="zoom-in">
+                    <div class="card-body p-4 text-center">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <i class="bi bi-quote fs-1 text-primary opacity-25"></i>
+                            <button id="refreshQuoteBtn" class="btn btn-sm btn-outline-primary" title="Nuova citazione">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                        <blockquote class="blockquote mb-0">
+                            <p id="quoteText" class="fs-4 mb-3">@Model.DailyQuote</p>
+                            <footer id="quoteAuthor" class="blockquote-footer fs-6">
+                                @Model.QuoteAuthor
+                            </footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="mb-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">Come funziona SkillSwap</h2>
+                <p class="lead text-muted">Semplice, intuitivo e completamente gratuito</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary-light p-3 mb-3 d-inline-flex">
+                            <i class="bi bi-person-plus fs-1 text-primary"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Crea il tuo profilo</h3>
+                        <p class="text-muted">Aggiungi le competenze che offri e quelle che vorresti imparare. Personalizza il tuo profilo con una breve biografia.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-success-light p-3 mb-3 d-inline-flex">
+                            <i class="bi bi-people fs-1 text-success"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Trova il match perfetto</h3>
+                        <p class="text-muted">Il nostro algoritmo di intelligenza artificiale trova persone con competenze complementari alle tue.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-warning-light p-3 mb-3 d-inline-flex">
+                            <i class="bi bi-arrow-left-right fs-1 text-warning"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Inizia lo scambio</h3>
+                        <p class="text-muted">Contatta e organizza incontri per scambiare conoscenze. Cresci e migliora insieme ad altri appassionati.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+@if (Model.StatsTotalUsers > 0)
+{
+    <section class="bg-light py-5 mb-5">
+        <div class="container">
+            <div class="row text-center mb-4" data-aos="fade-up">
+                <div class="col-12">
+                    <h2 class="fw-bold">La nostra community in numeri</h2>
+                    <p class="text-muted">Unisciti a migliaia di persone che condividono competenze ogni giorno</p>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                    <div class="display-3 fw-bold text-primary mb-2">
+                        <span class="counter">@Model.StatsTotalUsers</span>
+                    </div>
+                    <p class="fs-5">Utenti attivi</p>
+                </div>
+
+                <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                    <div class="display-3 fw-bold text-success mb-2">
+                        <span class="counter">@Model.StatsOfferedSkills</span>
+                    </div>
+                    <p class="fs-5">Competenze offerte</p>
+                </div>
+
+                <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                    <div class="display-3 fw-bold text-info mb-2">
+                        <span class="counter">@Model.StatsRequestedSkills</span>
+                    </div>
+                    <p class="fs-5">Competenze richieste</p>
+                </div>
+
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="display-3 fw-bold text-warning mb-2">
+                        <span class="counter">@Model.StatsSuccessfulMatches</span>
+                    </div>
+                    <p class="fs-5">Match completati</p>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Featured Skills Section -->
+<section class="mb-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Competenze più richieste</h2>
+                <p class="text-muted">Ecco cosa stanno cercando di imparare gli utenti</p>
+            </div>
+        </div>
+
+        <div class="row">
+            @foreach (var skill in Model.TopRequestedSkills)
+            {
+                <div class="col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="@(100 * (Model.TopRequestedSkills.IndexOf(skill) % 4))">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">@skill.Name</h5>
+                                <span class="badge bg-primary">@skill.Count utenti</span>
+                            </div>
+                            <p class="card-text small text-muted">@skill.Category</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Testimonial Section -->
+<section class="bg-light py-5 mb-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Cosa dicono i nostri utenti</h2>
+                <p class="text-muted">Storie di successo dalla nostra community</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                        </div>
+                        <p class="mb-3">"Ho imparato a suonare la chitarra grazie a Marco, che mi ha dato lezioni in cambio di mie competenze di fotografia. Un'esperienza fantastica!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width:50px;height:50px;">LR</div>
+                            <div>
+                                <h6 class="mb-1">Laura Rossi</h6>
+                                <p class="small text-muted mb-0">Fotografa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                        </div>
+                        <p class="mb-3">"SkillSwap mi ha permesso di migliorare il mio inglese scambiando lezioni con un madrelingua che voleva imparare l'italiano. Ora ci sentiamo regolarmente!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width:50px;height:50px;">GM</div>
+                            <div>
+                                <h6 class="mb-1">Giovanni Moretti</h6>
+                                <p class="small text-muted mb-0">Sviluppatore software</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                        </div>
+                        <p class="mb-3">"Ho sempre voluto imparare a cucinare piatti asiatici e grazie a SkillSwap ho trovato qualcuno che mi ha insegnato in cambio di lezioni di yoga. Incredibile!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width:50px;height:50px;">FB</div>
+                            <div>
+                                <h6 class="mb-1">Francesca Bianchi</h6>
+                                <p class="small text-muted mb-0">Insegnante di yoga</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" data-aos="fade-up">
+                <div class="card bg-primary text-white">
+                    <div class="card-body p-5 text-center">
+                        <h2 class="fw-bold mb-3">Pronto a iniziare il tuo viaggio di scambio competenze?</h2>
+                        <p class="lead mb-4">Unisciti a SkillSwap oggi stesso e scopri un nuovo modo di imparare e insegnare</p>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <a href="/Account/Register" class="btn btn-light btn-lg px-5">
+                                <i class="bi bi-person-plus me-2"></i>Registrati Gratuitamente
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Match" class="btn btn-light btn-lg px-5">
+                                <i class="bi bi-people me-2"></i>Trova nuovi match
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Animazione contatori
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 100; // Velocità di conteggio
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.innerText);
+                let count = 0;
+                const increment = Math.ceil(target / 20);
+
+                const updateCount = () => {
+                    if (count < target) {
+                        count += increment;
+                        if (count > target) count = target;
+                        counter.innerText = count;
+                        setTimeout(updateCount, speed);
+                    }
+                };
+
+                updateCount();
+            });
+        });
+    </script>
+}

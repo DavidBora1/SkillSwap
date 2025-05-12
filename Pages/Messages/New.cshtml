@@ -1,0 +1,58 @@
+﻿@page
+@model SkillSwap.Pages.Messages.NewModel
+@{
+    ViewData["Title"] = "Nuovo Messaggio";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="./Index">Messaggi</a></li>
+                    <li class="breadcrumb-item active">Nuovo</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Scrivi un nuovo messaggio</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Message.RecipientId" class="form-label">Destinatario</label>
+                    @if (Model.IsReply)
+                    {
+                        <input type="hidden" asp-for="Message.RecipientId" />
+                        <input type="text" value="@Model.RecipientName" class="form-control" readonly />
+                    }
+                    else
+                    {
+                        <select asp-for="Message.RecipientId" asp-items="Model.Recipients" class="form-select">
+                            <option value="">-- Seleziona un destinatario --</option>
+                        </select>
+                        <span asp-validation-for="Message.RecipientId" class="text-danger"></span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Message.Content" class="form-label">Messaggio</label>
+                    <textarea asp-for="Message.Content" class="form-control" rows="8"></textarea>
+                    <span asp-validation-for="Message.Content" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Invia</button>
+                <a asp-page="./Index" class="btn btn-secondary">Annulla</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

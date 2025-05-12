@@ -1,0 +1,52 @@
+﻿@page
+@model SkillSwap.Pages.Profile.TestEditSkillModel
+@{
+    ViewData["Title"] = "Test Modifica Competenze";
+}
+
+<div class="container">
+    <h1>Test Modifica Competenze</h1>
+
+    <div class="alert alert-info">
+        <p>Questa pagina permette di verificare i link di modifica delle competenze.</p>
+    </div>
+
+    <div class="mb-4">
+        <h3>Diagnostica link competenze</h3>
+
+        <div class="mb-3">
+            <label for="skillId" class="form-label">ID Competenza</label>
+            <input type="number" id="skillId" class="form-control" min="1" value="1" />
+        </div>
+
+        <div class="mb-3">
+            <a id="directLink" href="#" class="btn btn-primary me-2">Link diretto</a>
+            <a id="tagHelperLink" asp-page="./EditSkill" asp-route-id="1" class="btn btn-success me-2">Link tag helper</a>
+        </div>
+    </div>
+
+    <hr />
+
+    <h2>Log di sistema</h2>
+    <p>Controlla i log dell'applicazione per vedere i dettagli delle richieste e risposte.</p>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const skillIdInput = document.getElementById('skillId');
+            const directLink = document.getElementById('directLink');
+
+            // Aggiorna il link quando cambia l'ID
+            skillIdInput.addEventListener('change', function() {
+                const id = skillIdInput.value;
+                directLink.href = `/Profile/EditSkill/${id}`;
+                console.log(`Link aggiornato a: /Profile/EditSkill/${id}`);
+            });
+
+            // Inizializza il link
+            const id = skillIdInput.value;
+            directLink.href = `/Profile/EditSkill/${id}`;
+        });
+    </script>
+}

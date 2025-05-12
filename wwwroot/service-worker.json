@@ -1,0 +1,62 @@
+// Service Worker per SkillSwap
+const CACHE_NAME = 'skillswap-cache-v1';
+const urlsToCache = [
+  '/',
+  '/css/site.css',
+  '/js/site.js',
+  '/lib/bootstrap/dist/css/bootstrap.min.css',
+  '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
+  '/lib/jquery/dist/jquery.min.js'
+];
+
+// Installazione del service worker
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        console.log('Cache opened');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+// Attivazione e pulizia della cache vecchia
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// Intercetta le richieste e servi dalla cache quando possibile
+self.addEventListener('fetch', function(event) {
+  // Skippa le richieste di API o autenticazione
+  if (event.request.url.includes('/api/') || 
+      event.request.url.includes('/Account/') || 
+      event.request.url.includes('/Identity/')) {
+    return;
+  }
+  
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        // Cache hit - ritorna la risposta
+        if (response) {
+          return response;
+        }
+        
+        // Altrimenti, fai la richiesta
+        return fetch(event.request);
+      })
+  );
+});
+
+console.log('Service worker installato correttamente!');

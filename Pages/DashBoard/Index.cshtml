@@ -1,0 +1,274 @@
+﻿@page
+@model SkillSwap.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="mb-3">Dashboard Personale</h1>
+            <p class="lead">Benvenuto, @Model.UserName! Ecco un riepilogo della tua attività su SkillSwap.</p>
+        </div>
+    </div>
+
+    <!-- Statistiche Cards -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100">
+                <div class="card-body stat-card primary">
+                    <div class="stat-icon">
+                        <i class="bi bi-lightbulb-fill fs-4"></i>
+                    </div>
+                    <h3 class="h5 mb-1">Competenze Offerte</h3>
+                    <div class="display-5 fw-bold">@Model.OfferedSkillsCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100">
+                <div class="card-body stat-card success">
+                    <div class="stat-icon">
+                        <i class="bi bi-journal-bookmark fs-4"></i>
+                    </div>
+                    <h3 class="h5 mb-1">Competenze Richieste</h3>
+                    <div class="display-5 fw-bold">@Model.RequestedSkillsCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100">
+                <div class="card-body stat-card warning">
+                    <div class="stat-icon">
+                        <i class="bi bi-send-fill fs-4"></i>
+                    </div>
+                    <h3 class="h5 mb-1">Messaggi Inviati</h3>
+                    <div class="display-5 fw-bold">@Model.SentMessagesCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="card h-100">
+                <div class="card-body stat-card danger">
+                    <div class="stat-icon">
+                        <i class="bi bi-envelope-fill fs-4"></i>
+                    </div>
+                    <h3 class="h5 mb-1">Messaggi Ricevuti</h3>
+                    <div class="display-5 fw-bold">@Model.ReceivedMessagesCount</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <!-- Grafico distribuzione competenze -->
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Le tue competenze</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TotalSkills > 0)
+                    {
+                        <canvas id="skillsChart" height="250"></canvas>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-lightbulb fs-1 text-muted mb-3"></i>
+                            <p class="mb-3">Non hai ancora aggiunto competenze al tuo profilo.</p>
+                            <a href="/Profile/AddSkill?isOffered=true" class="btn btn-primary">Aggiungi una competenza</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggerimenti IA -->
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-robot me-2"></i>Suggerimenti personalizzati</h5>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.AiTip))
+                    {
+                        <div class="p-4 bg-light rounded">
+                            <i class="bi bi-quote fs-3 text-primary opacity-50"></i>
+                            <p class="mb-0 lead">@Model.AiTip</p>
+                        </div>
+                    }
+                    else if (Model.TotalSkills > 0)
+                    {
+                        <div class="d-flex align-items-center justify-content-center py-5">
+                            <div class="spinner-border text-primary me-2" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span>Generazione dei suggerimenti in corso...</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-info-circle fs-1 text-muted mb-3"></i>
+                            <p>Aggiungi competenze al tuo profilo per ricevere suggerimenti personalizzati.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <!-- Potenziali match -->
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Match suggeriti</h5>
+                    <a href="/Match" class="btn btn-sm btn-outline-primary">Vedi tutti</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopMatches.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var match in Model.TopMatches)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@match.UserEmail</h6>
+                                        @if (match.MatchReason == "offer")
+                                        {
+                                            <span class="badge bg-success">Offre competenze che cerchi</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info">Cerca competenze che offri</span>
+                                        }
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-primary rounded-pill">@match.MatchScore</span>
+                                        <a href="/Messages/New?recipientId=@match.Id" class="btn btn-sm btn-outline-primary ms-2">
+                                            <i class="bi bi-chat-dots"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-people fs-1 text-muted mb-3"></i>
+                            <p>Non sono stati trovati match. Aggiungi più competenze al tuo profilo!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Attività recenti -->
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Attività recenti</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.RecentActivities.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <li class="list-group-item d-flex align-items-center">
+                                    <div class="activity-icon me-3 @activity.IconClass">
+                                        <i class="bi @activity.Icon"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@activity.Title</div>
+                                        <div class="text-muted small">@activity.Description</div>
+                                        <div class="text-muted small">@activity.Date.ToString("dd/MM/yyyy HH:mm")</div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-event fs-1 text-muted mb-3"></i>
+                            <p>Nessuna attività recente da mostrare.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-message {
+            background-color: rgba(66, 133, 244, 0.1);
+            color: #4285f4;
+        }
+
+        .icon-skill {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: #34a853;
+        }
+
+        .icon-login {
+            background-color: rgba(251, 188, 5, 0.1);
+            color: #fbbc05;
+        }
+
+        .icon-profile {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: #ea4335;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Chart.js - Distribuzione delle competenze
+        @if (Model.TotalSkills > 0)
+        {
+            <text>
+                    const ctx = document.getElementById('skillsChart').getContext('2d');
+                    const skillsChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Competenze offerte', 'Competenze richieste'],
+                            datasets: [{
+                                data: [@Model.OfferedSkillsCount, @Model.RequestedSkillsCount],
+                                backgroundColor: ['#34a853', '#4285f4'],
+                                borderColor: ['#ffffff', '#ffffff'],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+            </text>
+        }
+        });
+    </script>
+}

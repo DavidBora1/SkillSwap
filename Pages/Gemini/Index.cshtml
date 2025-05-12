@@ -1,0 +1,201 @@
+﻿@page
+@model SkillSwap.Pages.Gemini.IndexModel
+@{
+    ViewData["Title"] = "Gemini AI";
+}
+
+<div class="container">
+    <h1 class="mb-4">Gemini AI</h1>
+    <div class="alert alert-info">
+        Questa pagina dimostra le funzionalità di intelligenza artificiale di SkillSwap, potenziate da Google Gemini.
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Miglioramento descrizione competenza</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="skillName" class="form-label">Nome competenza</label>
+                        <input type="text" class="form-control" id="skillName" placeholder="Es. Programmazione Python">
+                    </div>
+                    <div class="mb-3">
+                        <label for="skillDescription" class="form-label">Descrizione attuale (opzionale)</label>
+                        <textarea class="form-control" id="skillDescription" rows="3" placeholder="Descrivi brevemente la tua competenza"></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="improveBtn">Genera descrizione migliorata</button>
+
+                    <div class="mt-3" id="improveResultContainer" style="display: none;">
+                        <h6>Descrizione migliorata:</h6>
+                        <div id="improveResult" class="border p-2 rounded bg-light"></div>
+                        <div id="improveError" class="text-danger mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Generazione spunti di conversazione</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="skill1" class="form-label">Prima competenza</label>
+                        <input type="text" class="form-control" id="skill1" placeholder="Es. Fotografia">
+                    </div>
+                    <div class="mb-3">
+                        <label for="skill2" class="form-label">Seconda competenza</label>
+                        <input type="text" class="form-control" id="skill2" placeholder="Es. Web design">
+                    </div>
+                    <button class="btn btn-success" id="conversationBtn">Genera spunto</button>
+
+                    <div class="mt-3" id="conversationResultContainer" style="display: none;">
+                        <h6>Spunto di conversazione:</h6>
+                        <div id="conversationResult" class="border p-2 rounded bg-light"></div>
+                        <div id="conversationError" class="text-danger mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Suggerimenti personalizzati</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="skillsList" class="form-label">Le tue competenze (separate da virgole)</label>
+                        <input type="text" class="form-control" id="skillsList" placeholder="Es. Marketing, Social media, Copywriting">
+                    </div>
+                    <button class="btn btn-warning" id="suggestionBtn">Genera suggerimento</button>
+
+                    <div class="mt-3" id="suggestionResultContainer" style="display: none;">
+                        <h6>Suggerimento:</h6>
+                        <div id="suggestionResult" class="border p-2 rounded bg-light"></div>
+                        <div id="suggestionError" class="text-danger mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Miglioramento descrizione
+            document.getElementById('improveBtn').addEventListener('click', function() {
+                const skillName = document.getElementById('skillName').value;
+                const description = document.getElementById('skillDescription').value;
+                const resultContainer = document.getElementById('improveResultContainer');
+                const resultDiv = document.getElementById('improveResult');
+                const errorDiv = document.getElementById('improveError');
+
+                if (!skillName) {
+                    errorDiv.textContent = "Inserisci il nome della competenza";
+                    resultContainer.style.display = "block";
+                    resultDiv.textContent = "";
+                    return;
+                }
+
+                resultContainer.style.display = "block";
+                resultDiv.innerHTML = "<div class='spinner-border spinner-border-sm' role='status'></div> Generazione in corso...";
+                errorDiv.textContent = "";
+
+                // IMPORTANTE: Nota il formato dell'URL corretto per i handler di Razor Pages
+                fetch(`/api/gemini?handler=improvedescription&skillName=${encodeURIComponent(skillName)}&description=${encodeURIComponent(description)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Errore HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resultDiv.textContent = data.description;
+                    })
+                    .catch(error => {
+                        console.error('Errore:', error);
+                        errorDiv.textContent = `Errore: ${error.message}`;
+                        resultDiv.textContent = "";
+                    });
+            });
+
+            // Generazione spunti conversazione
+            document.getElementById('conversationBtn').addEventListener('click', function() {
+                const skill1 = document.getElementById('skill1').value;
+                const skill2 = document.getElementById('skill2').value;
+                const resultContainer = document.getElementById('conversationResultContainer');
+                const resultDiv = document.getElementById('conversationResult');
+                const errorDiv = document.getElementById('conversationError');
+
+                if (!skill1 || !skill2) {
+                    errorDiv.textContent = "Inserisci entrambe le competenze";
+                    resultContainer.style.display = "block";
+                    resultDiv.textContent = "";
+                    return;
+                }
+
+                resultContainer.style.display = "block";
+                resultDiv.innerHTML = "<div class='spinner-border spinner-border-sm' role='status'></div> Generazione in corso...";
+                errorDiv.textContent = "";
+
+                // IMPORTANTE: Nota il formato dell'URL corretto per i handler di Razor Pages
+                fetch(`/api/gemini?handler=conversationstarter&skill1=${encodeURIComponent(skill1)}&skill2=${encodeURIComponent(skill2)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Errore HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resultDiv.textContent = data.starter;
+                    })
+                    .catch(error => {
+                        console.error('Errore:', error);
+                        errorDiv.textContent = `Errore: ${error.message}`;
+                        resultDiv.textContent = "";
+                    });
+            });
+
+            // Suggerimenti personalizzati
+            document.getElementById('suggestionBtn').addEventListener('click', function() {
+                const skills = document.getElementById('skillsList').value;
+                const resultContainer = document.getElementById('suggestionResultContainer');
+                const resultDiv = document.getElementById('suggestionResult');
+                const errorDiv = document.getElementById('suggestionError');
+
+                if (!skills) {
+                    errorDiv.textContent = "Inserisci almeno una competenza";
+                    resultContainer.style.display = "block";
+                    resultDiv.textContent = "";
+                    return;
+                }
+
+                resultContainer.style.display = "block";
+                resultDiv.innerHTML = "<div class='spinner-border spinner-border-sm' role='status'></div> Generazione in corso...";
+                errorDiv.textContent = "";
+
+                // IMPORTANTE: Nota il formato dell'URL corretto per i handler di Razor Pages
+                fetch(`/api/gemini?handler=suggestion&skills=${encodeURIComponent(skills)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Errore HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resultDiv.textContent = data.suggestion;
+                    })
+                    .catch(error => {
+                        console.error('Errore:', error);
+                        errorDiv.textContent = `Errore: ${error.message}`;
+                        resultDiv.textContent = "";
+                    });
+            });
+        });
+    </script>
+}

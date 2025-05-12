@@ -1,0 +1,225 @@
+﻿@page
+@model SkillSwap.Pages.Exchanges.IndexModel
+@{
+    ViewData["Title"] = "I tuoi scambi";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <ul class="nav nav-tabs card-header-tabs" id="exchangesTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active text-dark" id="pendingTab" data-bs-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">In attesa</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-dark" id="activeTab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="false">Attivi</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-dark" id="completedTab" data-bs-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">Completati</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="exchangesTabContent">
+                        <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pendingTab">
+                            @if (!Model.PendingExchanges.Any())
+                            {
+                                <p>Non hai scambi in attesa.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Competenza richiesta</th>
+                                                <th>Competenza offerta</th>
+                                                <th>Utente</th>
+                                                <th>Stato</th>
+                                                <th>Data richiesta</th>
+                                                <th>Azioni</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var exchange in Model.PendingExchanges)
+                                            {
+                                                <tr>
+                                                    <td>@exchange.RequestedSkill.Name</td>
+                                                    <td>@exchange.OfferedSkill.Name</td>
+                                                    <td>
+                                                        @if (Model.IsExchangeInitiator(exchange))
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.ProviderId">
+                                                                @exchange.Provider.User.UserName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.RequestorId">
+                                                                @exchange.Requestor.User.UserName
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                    <td><span class="badge bg-warning">@exchange.Status</span></td>
+                                                    <td>@exchange.CreatedDate.ToShortDateString()</td>
+                                                    <td>
+                                                        <a asp-page="./Details" asp-route-id="@exchange.Id" class="btn btn-sm btn-primary">Dettagli</a>
+                                                        @if (!Model.IsExchangeInitiator(exchange))
+                                                        {
+                                                            <form method="post" class="d-inline">
+                                                                <button type="submit" asp-page-handler="Accept" asp-route-id="@exchange.Id" class="btn btn-sm btn-success">Accetta</button>
+                                                                <button type="submit" asp-page-handler="Reject" asp-route-id="@exchange.Id" class="btn btn-sm btn-danger">Rifiuta</button>
+                                                            </form>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="activeTab">
+                            @if (!Model.ActiveExchanges.Any())
+                            {
+                                <p>Non hai scambi attivi.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Competenza richiesta</th>
+                                                <th>Competenza offerta</th>
+                                                <th>Utente</th>
+                                                <th>Data accettazione</th>
+                                                <th>Azioni</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var exchange in Model.ActiveExchanges)
+                                            {
+                                                <tr>
+                                                    <td>@exchange.RequestedSkill.Name</td>
+                                                    <td>@exchange.OfferedSkill.Name</td>
+                                                    <td>
+                                                        @if (Model.IsExchangeInitiator(exchange))
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.ProviderId">
+                                                                @exchange.Provider.User.UserName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.RequestorId">
+                                                                @exchange.Requestor.User.UserName
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                    <td>@exchange.CreatedDate.ToShortDateString()</td>
+                                                    <td>
+                                                        <a asp-page="./Details" asp-route-id="@exchange.Id" class="btn btn-sm btn-primary">Dettagli</a>
+                                                        <form method="post" class="d-inline">
+                                                            <button type="submit" asp-page-handler="Complete" asp-route-id="@exchange.Id" class="btn btn-sm btn-success">Completa</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completedTab">
+                            @if (!Model.CompletedExchanges.Any())
+                            {
+                                <p>Non hai scambi completati.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Competenza richiesta</th>
+                                                <th>Competenza offerta</th>
+                                                <th>Utente</th>
+                                                <th>Data completamento</th>
+                                                <th>Valutazione</th>
+                                                <th>Azioni</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var exchange in Model.CompletedExchanges)
+                                            {
+                                                <tr>
+                                                    <td>@exchange.RequestedSkill.Name</td>
+                                                    <td>@exchange.OfferedSkill.Name</td>
+                                                    <td>
+                                                        @if (Model.IsExchangeInitiator(exchange))
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.ProviderId">
+                                                                @exchange.Provider.User.UserName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-page="/Profile/Index" asp-route-userId="@exchange.RequestorId">
+                                                                @exchange.Requestor.User.UserName
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                    <td>@(exchange.CompletedDate?.ToShortDateString() ?? "-")</td>
+                                                    <td>
+                                                        @if ((Model.IsExchangeInitiator(exchange) && exchange.RequestorRating.HasValue) ||
+                                                       (!Model.IsExchangeInitiator(exchange) && exchange.ProviderRating.HasValue))
+                                                        {
+                                                            <span class="text-warning">
+                                                                @for (int i = 0; i < (Model.IsExchangeInitiator(exchange) ? exchange.RequestorRating.Value : exchange.ProviderRating.Value); i++)
+                                                                {
+                                                                    <i class="bi bi-star-fill"></i>
+                                                                }
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">Non valutato</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <a asp-page="./Details" asp-route-id="@exchange.Id" class="btn btn-sm btn-primary">Dettagli</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

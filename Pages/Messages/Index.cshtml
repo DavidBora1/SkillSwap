@@ -1,0 +1,27 @@
+﻿@page
+@model SkillSwap.Pages.Messages.IndexModel
+@{
+    ViewData["Title"] = "Messaggi";
+}
+
+<h1>I tuoi messaggi</h1>
+
+@if (Model.Messages.Any())
+{
+    <div class="list-group">
+        @foreach (var message in Model.Messages)
+        {
+            <a href="/Messages/Details/@message.Id" class="list-group-item list-group-item-action @(message.IsRead ? "" : "fw-bold")">
+                <h5 class="mb-1">@message.SenderName</h5>
+                <p class="mb-1">@message.Content</p>
+                <small>@message.SentAt.ToString("dd/MM/yyyy HH:mm")</small>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Nessun messaggio ricevuto.
+    </div>
+}

@@ -1,0 +1,159 @@
+﻿@page
+@model SkillSwap.Pages.About.IndexModel
+@{
+    ViewData["Title"] = "Informazioni";
+    ViewData["Description"] = "Informazioni su SkillSwap: come funziona la piattaforma di scambio competenze più innovativa";
+}
+
+<div class="container mt-5">
+    <div class="row mb-5">
+        <div class="col-lg-8 offset-lg-2 text-center">
+            <h1 class="display-4 mb-4">Su <span class="text-primary">Skill</span><span class="text-success">Swap</span></h1>
+            <p class="lead">
+                Benvenuto in SkillSwap, la piattaforma innovativa che ti permette di scambiare competenze con altre persone in modo semplice e gratuito.
+            </p>
+        </div>
+    </div>
+
+    <!-- Storia -->
+    <div class="row mb-5" data-aos="fade-up">
+        <div class="col-md-6">
+            <img src="/Images?handler=AboutImage" class="img-fluid rounded shadow-lg" alt="SkillSwap storia">
+        </div>
+        <div class="col-md-6">
+            <h2 class="mb-4">La nostra storia</h2>
+            <p>
+                SkillSwap è nato dalla semplice idea che ognuno di noi ha competenze da condividere e molto da imparare dagli altri.
+                Il nostro obiettivo è creare un ecosistema in cui le persone possano scambiarsi conoscenze, crescendo insieme.
+            </p>
+            <p>
+                La piattaforma è stata sviluppata nel 2025 come progetto scolastico e si è rapidamente evoluta in un servizio completo
+                per facilitare la condivisione di competenze tra persone di tutto il mondo.
+            </p>
+        </div>
+    </div>
+
+    <!-- Come funziona -->
+    <div class="row mb-5" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-12 text-center mb-4">
+            <h2>Come funziona</h2>
+            <p class="lead">Tre semplici passi per iniziare a scambiare competenze</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="bg-primary-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-1-circle fs-1 text-primary"></i>
+                    </div>
+                    <h3 class="mt-4">Crea il tuo profilo</h3>
+                    <p>Registrati e aggiungi le competenze che puoi offrire e quelle che vorresti imparare.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="bg-success-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-2-circle fs-1 text-success"></i>
+                    </div>
+                    <h3 class="mt-4">Trova match</h3>
+                    <p>Il nostro algoritmo di matching basato su IA ti suggerisce utenti con competenze complementari alle tue.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="bg-warning-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-3-circle fs-1 text-warning"></i>
+                    </div>
+                    <h3 class="mt-4">Inizia lo scambio</h3>
+                    <p>Contatta i tuoi match e organizza incontri per scambiare le tue competenze faccia a faccia o online.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tecnologie -->
+    <div class="row mb-5 bg-light p-5 rounded" data-aos="fade-up" data-aos-delay="200">
+        <div class="col-md-4 mb-4">
+            <h2 class="mb-4">Tecnologie</h2>
+            <p>
+                SkillSwap è sviluppato con tecnologie all'avanguardia:
+            </p>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>ASP.NET Core 7</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Entity Framework Core</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Identity Framework</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>SQL Server</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Bootstrap 5</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Integrazione API Gemini</li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h2 class="mb-4">Intelligenza Artificiale</h2>
+            <p>
+                SkillSwap utilizza l'intelligenza artificiale di Google Gemini per:
+            </p>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5>Matching intelligente</h5>
+                            <p>Algoritmi avanzati che analizzano le competenze per trovare i match migliori.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5>Suggerimenti personalizzati</h5>
+                            <p>Consigli su misura per migliorare il tuo profilo e le tue competenze.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5>Spunti di conversazione</h5>
+                            <p>Idee per iniziare una conversazione produttiva con i tuoi match.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5>Ottimizzazione descrizioni</h5>
+                            <p>Miglioramento automatico delle descrizioni delle tue competenze.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-12 text-center">
+            <div class="card bg-primary text-white">
+                <div class="card-body py-5">
+                    <h2 class="mb-3">Pronto a scambiare le tue competenze?</h2>
+                    <p class="lead mb-4">Unisciti a SkillSwap oggi stesso e inizia a espandere i tuoi orizzonti!</p>
+
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a href="/Account/Register" class="btn btn-light btn-lg px-5">
+                            <i class="bi bi-person-plus-fill me-2"></i>Registrati ora
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Match" class="btn btn-light btn-lg px-5">
+                            <i class="bi bi-people-fill me-2"></i>Trova match
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

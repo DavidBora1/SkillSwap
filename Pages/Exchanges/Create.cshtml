@@ -1,0 +1,49 @@
+﻿@page
+@model SkillSwap.Pages.Exchanges.CreateModel
+@{
+    ViewData["Title"] = "Proponi Scambio";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Assicuriamoci che tutti i campi nascosti siano presenti -->
+                        <input type="hidden" asp-for="Exchange.RequestorId" />
+                        <input type="hidden" asp-for="Exchange.ProviderId" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Utente</label>
+                            <p class="form-control-static">@Model.Provider.User.UserName</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Exchange.RequestedSkillId" class="form-label">Competenza richiesta</label>
+                            <select asp-for="Exchange.RequestedSkillId" class="form-select" asp-items="Model.ProviderSkills">
+                                <option value="">-- Seleziona una competenza --</option>
+                            </select>
+                            <span asp-validation-for="Exchange.RequestedSkillId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Exchange.OfferedSkillId" class="form-label">Competenza offerta</label>
+                            <select asp-for="Exchange.OfferedSkillId" class="form-select" asp-items="Model.MySkills">
+                                <option value="">-- Seleziona una competenza --</option>
+                            </select>
+                            <span asp-validation-for="Exchange.OfferedSkillId" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Proponi Scambio</button>
+                        <a asp-page="/Profile/Index" asp-route-userId="@Model.Provider.Id" class="btn btn-secondary">Annulla</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

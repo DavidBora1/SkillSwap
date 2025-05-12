@@ -1,0 +1,39 @@
+﻿@page "{id:int}"
+@model SkillSwap.Pages.Messages.DetailsModel
+@{
+    ViewData["Title"] = "Dettaglio Messaggio";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="./Index">Messaggi</a></li>
+                    <li class="breadcrumb-item active">Dettaglio</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <div>
+                <h5 class="mb-0">Da: @Model.Message.SenderName</h5>
+                <small>Inviato: @Model.Message.SentAt.ToString("dd/MM/yyyy HH:mm")</small>
+            </div>
+            <div>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.Message.Id" onsubmit="return confirm('Sei sicuro di voler eliminare questo messaggio?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Elimina</button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">@Model.Message.Content</p>
+        </div>
+        <div class="card-footer">
+            <a asp-page="./New" asp-route-recipientId="@Model.Message.SenderId" class="btn btn-primary">Rispondi</a>
+            <a asp-page="./Index" class="btn btn-secondary">Torna ai messaggi</a>
+        </div>
+    </div>
+</div>

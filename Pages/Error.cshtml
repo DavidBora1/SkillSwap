@@ -1,0 +1,26 @@
+﻿@page
+@model SkillSwap.Pages.ErrorModel
+@{
+    ViewData["Title"] = "Errore";
+}
+
+<h1 class="text-danger">Errore.</h1>
+<h2 class="text-danger">Si è verificato un errore durante l'elaborazione della richiesta.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Modalità sviluppo</h3>
+<p>
+    Passando all'ambiente <strong>Sviluppo</strong> verranno visualizzati maggiori dettagli sull'errore che si è verificato.
+</p>
+<p>
+    <strong>L'ambiente di sviluppo non dovrebbe essere abilitato per le applicazioni distribuite.</strong>
+    Ciò può comportare la visualizzazione di informazioni sensibili da eccezioni agli utenti finali.
+    Per il debug locale, abilitare l'ambiente <strong>Sviluppo</strong> impostando la variabile d'ambiente <strong>ASPNETCORE_ENVIRONMENT</strong> su <strong>Development</strong>
+    e riavviando l'app.
+</p>

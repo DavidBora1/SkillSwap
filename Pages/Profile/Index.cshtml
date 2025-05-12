@@ -1,0 +1,199 @@
+﻿@page
+@model SkillSwap.Pages.Profile.IndexModel
+@{
+    ViewData["Title"] = Model.IsOtherUserProfile ? $"Profilo di {Model.UserProfile.User.UserName}" : "Il mio Profilo";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Informazioni</h5>
+            </div>
+            <div class="card-body">
+                <!-- Immagine profilo -->
+                @if (!string.IsNullOrEmpty(Model.UserProfile?.ProfileImageUrl))
+                {
+                    <img src="@Model.UserProfile.ProfileImageUrl" alt="Immagine profilo" class="img-thumbnail mb-3" />
+                }
+                else
+                {
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiNlMGUwZTAiLz48dGV4dCB4PSI1MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzc1NzU3NSI+VTwvdGV4dD48L3N2Zz4=" alt="Immagine profilo predefinita" class="img-thumbnail mb-3" />
+                }
+
+                <p>
+                    <strong>Biografia:</strong><br />
+                    @if (!string.IsNullOrEmpty(Model.UserProfile.Bio))
+                    {
+                        @Model.UserProfile.Bio
+                    }
+                    else
+                    {
+                        <span class="text-muted">Nessuna biografia inserita</span>
+                    }
+                </p>
+                <p><strong>Membro dal:</strong> @Model.UserProfile.JoinDate.ToString("dd/MM/yyyy")</p>
+
+                <!-- Link modifica profilo o proponi scambio -->
+                @if (Model.IsOtherUserProfile)
+                {
+                    <a asp-page="/Exchanges/Create" asp-route-providerId="@Model.UserProfile.Id" class="btn btn-primary">
+                        <i class="bi bi-shuffle"></i> Proponi Scambio
+                    </a>
+                }
+                else
+                {
+                    <a href="/Redirect/EditProfile" class="btn btn-outline-primary">Modifica profilo</a>
+                }
+            </div>
+        </div>
+
+        <!-- Card Reputazione -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Reputazione</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rating-display">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(Model.UserProfile.AverageRating))
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star text-warning"></i>
+                            }
+                        }
+                        <span class="ms-2">(@Model.UserProfile.AverageRating.ToString("F1"))</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5>@Model.UserProfile.ReputationLevel</h5>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @(Math.Min(100, Model.UserProfile.ReputationScore/2))%"
+                             aria-valuenow="@Model.UserProfile.ReputationScore" aria-valuemin="0" aria-valuemax="200"></div>
+                    </div>
+                    <small class="text-muted">Punteggio reputazione: @Model.UserProfile.ReputationScore</small>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="mb-0">Scambi completati: @Model.UserProfile.ExchangesCompleted</p>
+                    </div>
+                    <div>
+                        <p class="mb-0">Valutazioni ricevute: @Model.UserProfile.TotalRatings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <!-- Competenze offerte -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Competenze che offre</h5>
+                @if (!Model.IsOtherUserProfile)
+                {
+                    <a href="/Profile/AddSkill?isOffered=true" class="btn btn-sm btn-success">Aggiungi competenza offerta</a>
+                }
+            </div>
+            <div class="card-body">
+                @if (Model.OfferedSkills.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var skill in Model.OfferedSkills)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>@skill.Name</h5>
+                                    <span class="badge bg-success">Livello: @skill.ProficiencyLevel/5</span>
+                                </div>
+                                <p class="mb-1">Categoria: @skill.Category</p>
+                                @if (!string.IsNullOrEmpty(skill.Description))
+                                {
+                                    <p class="mb-1">@skill.Description</p>
+                                }
+
+                                @if (!Model.IsOtherUserProfile)
+                                {
+                                    <!-- Solo per il proprietario del profilo -->
+                                    <div class="d-flex justify-content-end">
+                                        <a href="/Redirect/EditSkill/@skill.Id" class="btn btn-sm btn-outline-primary me-2">Modifica</a>
+                                        <form method="post" asp-page-handler="DeleteSkill" asp-route-id="@skill.Id" onsubmit="return confirm('Sei sicuro di voler eliminare questa competenza?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger me-2">Elimina</button>
+                                        </form>
+                                        <form method="post" asp-page-handler="ImproveSkill" asp-route-id="@skill.Id">
+                                            <button type="submit" class="btn btn-sm btn-outline-info">Migliora descrizione</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        @(Model.IsOtherUserProfile ? "Questo utente non offre ancora competenze." : "Non hai ancora aggiunto competenze che offri.")
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Competenze richieste -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Competenze che cerca</h5>
+                @if (!Model.IsOtherUserProfile)
+                {
+                    <a href="/Profile/AddSkill?isOffered=false" class="btn btn-sm btn-info">Aggiungi competenza richiesta</a>
+                }
+            </div>
+            <div class="card-body">
+                @if (Model.RequestedSkills.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var skill in Model.RequestedSkills)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>@skill.Name</h5>
+                                    <span class="badge bg-info">Cerca</span>
+                                </div>
+                                <p class="mb-1">Categoria: @skill.Category</p>
+                                @if (!string.IsNullOrEmpty(skill.Description))
+                                {
+                                    <p class="mb-1">@skill.Description</p>
+                                }
+
+                                @if (!Model.IsOtherUserProfile)
+                                {
+                                    <!-- Solo per il proprietario del profilo -->
+                                    <div class="d-flex justify-content-end">
+                                        <a href="/Redirect/EditSkill/@skill.Id" class="btn btn-sm btn-outline-primary me-2">Modifica</a>
+                                        <form method="post" asp-page-handler="DeleteSkill" asp-route-id="@skill.Id" onsubmit="return confirm('Sei sicuro di voler eliminare questa competenza?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Elimina</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        @(Model.IsOtherUserProfile ? "Questo utente non cerca ancora competenze." : "Non hai ancora aggiunto competenze che cerchi.")
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

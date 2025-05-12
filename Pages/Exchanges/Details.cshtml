@@ -1,0 +1,58 @@
+﻿@page
+@model SkillSwap.Pages.Exchanges.DetailsModel
+@{
+    ViewData["Title"] = "Dettagli Scambio";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <!-- Dettagli dello scambio qui... -->
+        </div>
+    </div>
+
+    @if (Model.CanUserRateExchange)
+    {
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Lascia un feedback</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="SubmitFeedback">
+                    <input type="hidden" name="ExchangeId" value="@Model.Exchange.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Valuta l'esperienza (1-5 stelle)</label>
+                        <div class="rating">
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="Rating" id="star5" value="5" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="star5">5 ★</label>
+
+                                <input type="radio" class="btn-check" name="Rating" id="star4" value="4" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="star4">4 ★</label>
+
+                                <input type="radio" class="btn-check" name="Rating" id="star3" value="3" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="star3">3 ★</label>
+
+                                <input type="radio" class="btn-check" name="Rating" id="star2" value="2" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="star2">2 ★</label>
+
+                                <input type="radio" class="btn-check" name="Rating" id="star1" value="1" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="star1">1 ★</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Commento (opzionale)</label>
+                        <textarea name="Feedback" class="form-control" rows="3" maxlength="500"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Invia feedback</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

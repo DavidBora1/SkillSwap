@@ -1,0 +1,29 @@
+﻿@{
+    var title = ViewData["Title"] != null ? $"{ViewData["Title"]} - SkillSwap" : "SkillSwap - Condividi. Impara. Cresci.";
+    var description = ViewData["Description"] != null
+        ? ViewData["Description"].ToString()
+        : "SkillSwap è la piattaforma che ti permette di scambiare competenze con altre persone. Insegna ciò che sai fare e impara cose nuove senza spendere un euro!";
+    var keywords = ViewData["Keywords"] != null
+        ? ViewData["Keywords"].ToString()
+        : "skill swap, scambio competenze, skill sharing, condivisione conoscenze, imparare, insegnare";
+}
+
+<meta name="description" content="@description" />
+<meta name="keywords" content="@keywords" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://skillswap.it/" />
+<meta property="og:title" content="@title" />
+<meta property="og:description" content="@description" />
+<meta property="og:image" content="https://skillswap.it/images/social-preview.jpg" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://skillswap.it/" />
+<meta property="twitter:title" content="@title" />
+<meta property="twitter:description" content="@description" />
+<meta property="twitter:image" content="https://skillswap.it/images/social-preview.jpg" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://skillswap.it@(Context.Request.Path)" />

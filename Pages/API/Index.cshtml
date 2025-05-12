@@ -1,0 +1,171 @@
+﻿@page
+@model SkillSwap.Pages.API.IndexModel
+@{
+    ViewData["Title"] = "API e Integrazioni";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">API e Integrazioni</h1>
+            <p class="lead">
+                SkillSwap integra diverse API esterne per migliorare l'esperienza degli utenti. Ecco le principali:
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-robot me-2"></i>Google Gemini AI
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Utilizziamo l'API di Google Gemini per:</p>
+                    <ul>
+                        <li>Generare suggerimenti personalizzati</li>
+                        <li>Migliorare le descrizioni delle competenze</li>
+                        <li>Creare spunti di conversazione tra utenti</li>
+                        <li>Ottimizzare il processo di matching</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="https://ai.google.dev/gemini-api" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Documentazione
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-quote me-2"></i>ZenQuotes API
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Utilizziamo l'API ZenQuotes per mostrare citazioni motivazionali giornaliere nella home page, per ispirare gli utenti nel loro percorso di apprendimento.</p>
+                    <div class="mt-3">
+                        <a href="https://zenquotes.io/" target="_blank" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Documentazione
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-check me-2"></i>API Calendario
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Integriamo una API di calendario per:</p>
+                    <ul>
+                        <li>Pianificare incontri tra utenti</li>
+                        <li>Gestire la disponibilità per lo scambio di competenze</li>
+                        <li>Inviare promemoria per gli appuntamenti programmati</li>
+                    </ul>
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-outline-warning btn-sm" id="testApiBtn">
+                            <i class="bi bi-calendar-plus me-1"></i>Testa l'API
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-code-slash me-2"></i>Demo integrazioni API</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6>Test API Quote</h6>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-primary" type="button" id="fetchQuoteBtn">Richiedi citazione</button>
+                            <div id="quoteResult" class="form-control"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Test API Gemini</h6>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="skillInput" placeholder="Inserisci una competenza">
+                            <button class="btn btn-primary" type="button" id="fetchSuggestionBtn">Richiedi suggerimento</button>
+                        </div>
+                        <div class="bg-light p-3 rounded mt-2" id="suggestionResult">
+                            I suggerimenti appariranno qui...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Test API Quote
+            document.getElementById('fetchQuoteBtn').addEventListener('click', function() {
+                const resultElement = document.getElementById('quoteResult');
+                resultElement.textContent = "Caricamento...";
+
+                fetch('/api/quotes/daily')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Errore nella richiesta');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resultElement.textContent = `"${data.quote}" - ${data.author}`;
+                    })
+                    .catch(error => {
+                        resultElement.textContent = `Errore: ${error.message}`;
+                    });
+            });
+
+            // Test API Gemini
+            document.getElementById('fetchSuggestionBtn').addEventListener('click', function() {
+                const skillValue = document.getElementById('skillInput').value.trim();
+                const resultElement = document.getElementById('suggestionResult');
+
+                if (!skillValue) {
+                    resultElement.textContent = "Per favore, inserisci una competenza";
+                    return;
+                }
+
+                resultElement.textContent = "Generazione suggerimento...";
+
+                fetch(`/api/suggestions?skill=${encodeURIComponent(skillValue)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Errore nella richiesta');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resultElement.textContent = data.suggestion;
+                    })
+                    .catch(error => {
+                        resultElement.textContent = `Errore: ${error.message}`;
+                    });
+            });
+
+            // Test API Calendario
+            document.getElementById('testApiBtn').addEventListener('click', function() {
+                alert('Funzionalità in sviluppo. Sarà disponibile nella prossima versione.');
+            });
+        });
+    </script>
+}

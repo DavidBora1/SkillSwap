@@ -1,0 +1,57 @@
+﻿@page
+@model SkillSwap.Pages.Profile.AddSkillModel
+@{
+    ViewData["Title"] = Model.IsOffered ? "Aggiungi competenza offerta" : "Aggiungi competenza richiesta";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Skill.IsOffered" value="@Model.IsOffered" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Skill.Name" class="control-label">Nome competenza</label>
+                <input asp-for="Skill.Name" class="form-control" required />
+                <span asp-validation-for="Skill.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Skill.Category" class="control-label">Categoria</label>
+                <select asp-for="Skill.Category" class="form-select">
+                    <option value="Informatica">Informatica</option>
+                    <option value="Lingue">Lingue</option>
+                    <option value="Musica">Musica</option>
+                    <option value="Arte">Arte</option>
+                    <option value="Cucina">Cucina</option>
+                    <option value="Sport">Sport</option>
+                    <option value="Altro">Altro</option>
+                </select>
+                <span asp-validation-for="Skill.Category" class="text-danger"></span>
+            </div>
+
+            @if (Model.IsOffered)
+            {
+                <div class="form-group mb-3">
+                    <label asp-for="Skill.ProficiencyLevel" class="control-label">Livello di competenza (1-5)</label>
+                    <input asp-for="Skill.ProficiencyLevel" class="form-control" type="number" min="1" max="5" value="3" />
+                    <span asp-validation-for="Skill.ProficiencyLevel" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group mb-3">
+                <label asp-for="Skill.Description" class="control-label">Descrizione</label>
+                <textarea asp-for="Skill.Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Skill.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Salva</button>
+                <a href="/Profile/Index" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+    </div>
+</div>
